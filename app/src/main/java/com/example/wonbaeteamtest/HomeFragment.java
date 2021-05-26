@@ -22,14 +22,14 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rv = inflater.inflate(R.layout.fragment_home, container, false);
-        ImageView dial = rv.findViewById(R.id.dialbt);
+        ImageView news = rv.findViewById(R.id.disasternews);
         ImageView weather = rv.findViewById(R.id.weatherbt);
         ImageView behavior = rv.findViewById(R.id.behavioralbt);
 
-        dial.setOnClickListener(new View.OnClickListener() {
+        news.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:119"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://rscanner.ndmi.go.kr/scanning/"));
                 startActivity(intent);
             }
         });
