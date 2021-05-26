@@ -152,6 +152,9 @@ public void mOnClick(View view){
             case R.id.toShelter:
                goSheltFrag();
                 break;
+            case R.id.emer:
+                Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:119"));
+                startActivity(myIntent);
         }
 }
     /* 액션바에서 추가버튼 눌렸을 시 */
