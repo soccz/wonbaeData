@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -30,8 +31,10 @@ public class ShelterEdit extends AppCompatActivity {
     private ArrayList<String> Subject = new ArrayList<>();
     private Spinner mSpinner;
     private int subjectPosition;
-    private static final int REQUEST_CODE = 0;
+    private final int GET_GALLERY_IMAGE = 200;
     private ImageView imageView;
+
+    private Uri uri;
 
 
     @Override
@@ -47,19 +50,20 @@ public class ShelterEdit extends AppCompatActivity {
         nameText = (EditText) findViewById(R.id.shtName);
         addressText = (EditText) findViewById(R.id.shtAdd);
         providerText = (EditText) findViewById(R.id.shtWho);
-        imageView=(findViewById(R.id.shtImg));
+        imageView = (findViewById(R.id.shtImg));
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent,REQUEST_CODE);
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, GET_GALLERY_IMAGE);
             }
         });
 
         Intent intent = getIntent();
+        uri=intent.getParcelableExtra("simg");
+        imageView.setImageURI(uri);
         nameText.setText(intent.getStringExtra("name"));
         addressText.setText(intent.getStringExtra("address"));
         providerText.setText(intent.getStringExtra("provider"));
@@ -93,15 +97,11 @@ public class ShelterEdit extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
+        if (requestCode == GET_GALLERY_IMAGE) {
+            if (resultCode == RESULT_OK && data != null && data.getData() != null) {
                 try {
-                    InputStream in = getContentResolver().openInputStream(data.getData());
-
-                    Bitmap img = BitmapFactory.decodeStream(in);
-                    in.close();
-
-                    imageView.setImageBitmap(img);
+                    uri = data.getData();
+                    imageView.setImageURI(uri);
                 } catch (Exception e) {
 
                 }
@@ -122,20 +122,17 @@ public class ShelterEdit extends AppCompatActivity {
                     Toast.makeText(this, "대피소 이름을 입력해주세요.", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                if (nameText.getText().toString().length() > 0) {
-                    for (int i = 0; i < arraylist.size(); i++) {
-                        if (nameText.getText().toString().equals(arraylist.get(i).name)) {
-                            Toast.makeText(this, "동일한 이름의 대피소가 있습니다.", Toast.LENGTH_SHORT).show();
-                            break;
-                        }
+                else{
+                    if(uri==null){
+
                     }
-                } else {
-                    MainActivity.putExtraInfo(data, subjectPosition, nameText.getText().toString(),
+                    MainActivity.putExtraInfo(data,uri, subjectPosition, nameText.getText().toString(),
                             addressText.getText().toString(), providerText.getText().toString());
                     setResult(RESULT_OK, data);
                     finish();
                     break;
                 }
+
             case R.id.btnCancel:
                 super.onBackPressed();
                 break;

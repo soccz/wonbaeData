@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.DisplayMetrics;
@@ -16,6 +17,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,6 +29,9 @@ public class ShelterInpo extends AppCompatActivity {
     private TextView nameText;
     private TextView addressText;
     private TextView providerText;
+    private ImageView imageView;
+    private Uri uri;
+
     private int position;
     private int subjectPosition;
     public void TextViewFVI(){//findViewById 4개 묶어버림
@@ -34,6 +39,7 @@ public class ShelterInpo extends AppCompatActivity {
         nameText=(TextView)findViewById(R.id.shtName);
         addressText=(TextView)findViewById(R.id.shtAdd);
         providerText=(TextView)findViewById(R.id.shtWho);
+        imageView=(ImageView)findViewById(R.id.shtImg);
     }
 
     @Override
@@ -60,7 +66,8 @@ public class ShelterInpo extends AppCompatActivity {
                 subjectText.setText("화산");
                 break;
         }
-
+        uri= intent.getParcelableExtra("simg");
+        imageView.setImageURI(uri);
         nameText.setText(intent.getStringExtra("name"));
         addressText.setText(intent.getStringExtra("address"));
         providerText.setText(intent.getStringExtra("provider"));
@@ -79,7 +86,7 @@ public class ShelterInpo extends AppCompatActivity {
             case R.id.btnEdit://편집 버튼을 누르면
                 TextViewFVI();
                 Intent intent = new Intent(this,ShelterEdit.class);
-                MainActivity.putExtraInfo(intent,subjectPosition,nameText.getText().toString(),
+                MainActivity.putExtraInfo(intent,uri,subjectPosition,nameText.getText().toString(),
                         addressText.getText().toString(),providerText.getText().toString());
                 startActivityForResult(intent,0);
                 break;
@@ -113,7 +120,7 @@ public class ShelterInpo extends AppCompatActivity {
         if (requestCode==0&&resultCode==RESULT_OK){
             Intent toMain = new Intent();
             toMain.putExtra("position",position);
-            MainActivity.putExtraInfo(toMain,data.getIntExtra("subject",-1),data.getStringExtra("name"),
+            MainActivity.putExtraInfo(toMain, (Uri) data.getParcelableExtra("simg"),data.getIntExtra("subject",-1),data.getStringExtra("name"),
                     data.getStringExtra("address"),data.getStringExtra("provider"));
             setResult(3,toMain);
             finish();

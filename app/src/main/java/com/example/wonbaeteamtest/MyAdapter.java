@@ -45,7 +45,12 @@ public class MyAdapter extends BaseAdapter  {
             view = inflater.inflate(R.layout.shelter_list,viewGroup,false);
         }
         ImageView image = (ImageView)view.findViewById(R.id.image);
-        image.setImageResource(data.get(i).img);
+        if(data.get(i).img==null){
+            image.setImageResource(R.drawable.defaultimg);
+        }
+        else {
+            image.setImageURI(data.get(i).img);
+        }
         TextView text1 = (TextView)view.findViewById(R.id.nameText);
         text1.setText(data.get(i).name);
         TextView text2 = (TextView)view.findViewById(R.id.providerText);

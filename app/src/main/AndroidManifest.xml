@@ -14,7 +14,9 @@
         <activity android:name=".ShelterInpo">
         </activity>
         <activity android:name=".ShelterEdit"
-            >
+
+            android:windowSoftInputMode="stateAlwaysHidden">
+
         </activity>
         <activity android:name=".Splash">
             <intent-filter>

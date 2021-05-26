@@ -50,7 +50,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:scaleType="fitXY"
-                android:src="@drawable/testpic" />
+                android:src="@drawable/defaultimg" />
 
         </LinearLayout>
 

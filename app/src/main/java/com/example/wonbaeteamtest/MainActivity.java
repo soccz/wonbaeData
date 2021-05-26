@@ -1,30 +1,23 @@
 package com.example.wonbaeteamtest;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.view.MenuItemCompat;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ListFragment.OnListSelectedListener{
@@ -32,10 +25,11 @@ public class MainActivity extends AppCompatActivity implements ListFragment.OnLi
     public static ArrayList<ShelterData>arraylist=new ArrayList<>();
 
     public void onListSelected(int position){
+
         /*리스트 뷰가 눌리면 해당 객체 정보를 대피소 보기 엑티비티로 보냄*/
         Intent intent = new Intent(this, ShelterInpo.class);
         intent.putExtra("position", position);
-        putExtraInfo(intent, mData.get(position).subject, mData.get(position).name,
+        putExtraInfo(intent, mData.get(position).img, mData.get(position).subject, mData.get(position).name,
                 mData.get(position).address, mData.get(position).provider);
         startActivityForResult(intent, 0);
     }
@@ -55,8 +49,9 @@ public class MainActivity extends AppCompatActivity implements ListFragment.OnLi
     private long backKeyPressedTime = 0; //뒤로가기 버튼 눌렀던 시간 저장
     private Toast toast;//첫번째 뒤로가기 버튼을 누를때 표시하는 변수
 
-    public static void putExtraInfo(Intent intent, int subject, String name, String address, String provider) {
+    public static void putExtraInfo(Intent intent, Uri img , int subject, String name, String address, String provider) {
         //putExtra함수를 묶어버림
+        intent.putExtra("simg",img);
         intent.putExtra("subject", subject);
         intent.putExtra("name", name);
         intent.putExtra("address", address);
@@ -175,9 +170,9 @@ public void mOnClick(View view){
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         int position;
         if (requestCode == 1 && resultCode == RESULT_OK) {//추가를 누르고 편집엑티비티에서 저장을 누를경우 값들을 객체에 저장하고 리스트뷰 추가
-            mData.add(new ShelterData(R.drawable.testpic, data.getIntExtra("subject", -1), data.getStringExtra("name"),
+            mData.add(new ShelterData((Uri) data.getParcelableExtra("simg"), data.getIntExtra("subject", -1), data.getStringExtra("name"),
                     data.getStringExtra("provider"), data.getStringExtra("address")));
-            arraylist.add(new ShelterData(R.drawable.testpic, data.getIntExtra("subject", -1), data.getStringExtra("name"),
+            arraylist.add(new ShelterData((Uri) data.getParcelableExtra("simg"), data.getIntExtra("subject", -1), data.getStringExtra("name"),
                     data.getStringExtra("provider"), data.getStringExtra("address")));//mData에 객체가 추가되면 복사본도 추가
 
         } else if (requestCode == 0 && resultCode == 2) {//대피소 보기 엑티비티에서 삭제버튼을 눌렀을 경우 해당 객체를 삭제
